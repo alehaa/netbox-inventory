@@ -54,6 +54,7 @@ jobs:
           ln -s $(pwd)/../netbox-inventory/testing/configuration.testing.py netbox/netbox/configuration.py
           python -m pip install --upgrade pip
           pip install -r requirements.txt -U
+          pip install coverage
 
       - name: Check for missing migrations
         working-directory: netbox
@@ -62,4 +63,7 @@ jobs:
       - name: Run tests
         working-directory: netbox
         run: |
-          python netbox/manage.py test netbox_inventory.tests -v 2
+          coverage run --source="netbox_inventory" netbox/manage.py test netbox_inventory -v 2
+
+      - name: Show coverage report
+        run: coverage report --skip-covered --omit '*/migrations/*,*/tests/*'
